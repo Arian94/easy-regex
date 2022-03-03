@@ -1,5 +1,8 @@
-use crate::{error_handling::*, MetaFuncRegex, settings_mod::GroupSettings};
-
+use crate::{
+    error_handling::*,
+    settings_mod::{GroupSettings, Settings},
+    MetaFuncRegex,
+};
 
 impl MetaFuncRegex {
     pub fn make_group(
@@ -44,9 +47,14 @@ impl MetaFuncRegex {
         }
     }
 
-    pub fn into_group(mut self) -> MetaFuncRegex {
-        self.0 = format!("({})", self.0);
-        self
+    pub fn into_group(self, settings: &Settings) -> Result<MetaFuncRegex, String> {
+        let raw_result = format!("({})", self.0);
+        let final_result = MetaFuncRegex("".to_string()).make_literal_exp(&raw_result, &settings);
+        if let Ok(lit_exp) = final_result {
+            Ok(lit_exp)
+        } else {
+            Err(final_result.unwrap_err())
+        }
     }
 
     pub fn into_non_capture_group(mut self) -> MetaFuncRegex {
@@ -67,8 +75,8 @@ impl MetaFuncRegex {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use self::MetaFuncRegex;
+    use super::*;
     use crate::settings_mod::Settings;
 
     #[test]
@@ -96,15 +104,25 @@ mod tests {
     }
 
     #[test]
-    fn into_group_works_with_bug() {
+    fn into_group_works() {
         let initial_exp = MetaFuncRegex::new("group".to_string());
-        let result = initial_exp
-        .into_negative_group().make_literal_exp("", &Settings {
-            is_optional: true,
-            ..Default::default()
-        });
+        let result = initial_exp.into_group(&Settings::default());
 
-        assert_eq!("(?!group)?", result.unwrap().0);   // this is invalid regex, a false positive.
+        assert_eq!("(group)", result.unwrap().0);
+    }
+
+    #[test]
+    fn into_negative_group_works_with_bug() {
+        let initial_exp = MetaFuncRegex::new("group".to_string());
+        let result = initial_exp.into_negative_group().make_literal_exp(
+            "",
+            &Settings {
+                is_optional: true,
+                ..Default::default()
+            },
+        );
+
+        assert_eq!("(?!group)?", result.unwrap().0); // this is invalid regex, a false positive.
     }
 
     ////////////////////////////////////////////////// ERRORS /////////////////////////////////////////////////////

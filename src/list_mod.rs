@@ -16,6 +16,16 @@ impl MetaFuncRegex {
             Err(final_result.unwrap_err())
         }
     }
+
+    pub fn into_list(self, settings: &Settings) -> Result<MetaFuncRegex, String> {
+        let raw_result = format!("[{}]", self.0);
+        let final_result = MetaFuncRegex("".to_string()).make_literal_exp(&raw_result, &settings);
+        if let Ok(lit_exp) = final_result {
+            Ok(lit_exp)
+        } else {
+            Err(final_result.unwrap_err())
+        }
+    }
 }
 
 #[cfg(test)]

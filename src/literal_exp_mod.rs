@@ -1,10 +1,6 @@
 use crate::{error_handling::*, settings_mod::Settings, MetaFuncRegex};
 
 impl MetaFuncRegex {
-    pub fn new(raw: String) -> Self {
-        MetaFuncRegex(raw)
-    }
-
     pub fn make_literal_exp(
         mut self,
         expression: &str,
@@ -28,7 +24,7 @@ impl MetaFuncRegex {
             if settings.range.is_some()
                 && (settings.range.unwrap().0.is_some() || settings.range.unwrap().1.is_some())
             {
-                let numbers: (Option<u8>, Option<u8>) = settings.range.unwrap();
+                let numbers = settings.range.unwrap();
 
                 final_result = format!("{}{}", final_result, "{");
 
@@ -43,6 +39,9 @@ impl MetaFuncRegex {
                 }
 
                 final_result = format!("{}{}", final_result, "}");
+            }
+            if let Some(number) = settings.exact_amount {
+                final_result = format!("{}{}{}{}", final_result, "{", number, "}");
             }
             if settings.is_nil_or_more {
                 final_result = format!("{}{}", final_result, "*");

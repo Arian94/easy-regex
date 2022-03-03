@@ -5,7 +5,7 @@ pub struct Settings {
     pub with_left_boundary: bool,
     pub with_right_boundary: bool,
     pub range: Option<(Option<u8>, Option<u8>)>,
-    pub exact_amount: Option<i8>,
+    pub exact_amount: Option<u8>,
 }
 
 impl Default for Settings {
