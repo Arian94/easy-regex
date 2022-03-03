@@ -1,41 +1,29 @@
-use crate::{error_descriptions::*, literal_exp_mod::Settings, MetaFuncRegex};
+use crate::{error_handling::*, MetaFuncRegex, settings_mod::GroupSettings};
 
-pub struct GroupSettings {
-    pub other: Settings,
-    pub is_non_capture: bool,
-    pub is_positive_lookahead: bool,
-    pub is_negative_lookahead: bool,
-}
-
-impl Default for GroupSettings {
-    fn default() -> Self {
-        GroupSettings {
-            other: Settings::default(),
-            is_non_capture: false,
-            is_positive_lookahead: false,
-            is_negative_lookahead: false,
-        }
-    }
-}
 
 impl MetaFuncRegex {
     pub fn make_group(
-        mut self,
+        self,
         expression: &str,
         settings: &GroupSettings,
-    ) -> Result<MetaFuncRegex, &'static str> {
+    ) -> Result<MetaFuncRegex, String> {
         let mut final_result = expression.to_string();
 
         if settings.is_non_capture && settings.is_positive_lookahead {
-            Err(ERR_NON_CAPTURE_POSITIVE_LOOKAHEAD_GROUP)
+            let err = error_builder(expression, ERR_NON_CAPTURE_POSITIVE_LOOKAHEAD_GROUP);
+            Err(err)
         } else if settings.is_non_capture && settings.is_negative_lookahead {
-            Err(ERR_NONE_CAPTURE_NEGATIVE_LOOKAHEAD_GROUP)
+            let err = error_builder(expression, ERR_NONE_CAPTURE_NEGATIVE_LOOKAHEAD_GROUP);
+            Err(err)
         } else if settings.is_positive_lookahead && settings.is_negative_lookahead {
-            Err(ERR_POSITIVE_NEGATIVE_LOOKAHEAD_GROUP)
+            let err = error_builder(expression, ERR_POSITIVE_NEGATIVE_LOOKAHEAD_GROUP);
+            Err(err)
         } else if settings.is_positive_lookahead && settings.other.is_optional {
-            Err(ERR_OPTIONAL_POSITIVE_LOOKAHEAD_GROUP)
+            let err = error_builder(expression, ERR_OPTIONAL_POSITIVE_LOOKAHEAD_GROUP);
+            Err(err)
         } else if settings.is_negative_lookahead && settings.other.is_optional {
-            Err(ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP)
+            let err = error_builder(expression, ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
+            Err(err)
         } else {
             if settings.is_non_capture {
                 final_result = format!("{}{}{}", "(?:", final_result, ")");
@@ -47,10 +35,12 @@ impl MetaFuncRegex {
                 final_result = format!("{}{}{}", "(", final_result, ")");
             }
 
-            self = self
-                .make_literal_exp(final_result.as_str(), &settings.other)
-                .unwrap();
-            Ok(self)
+            let final_result = self.make_literal_exp(&final_result, &settings.other);
+            if let Ok(lit_exp) = final_result {
+                Ok(lit_exp)
+            } else {
+                Err(final_result.unwrap_err())
+            }
         }
     }
 
@@ -79,6 +69,7 @@ impl MetaFuncRegex {
 mod tests {
     use super::*;
     use self::MetaFuncRegex;
+    use crate::settings_mod::Settings;
 
     #[test]
     fn make_group_works() {
@@ -131,6 +122,7 @@ mod tests {
         };
 
         let result = initial_exp.make_group("group", &group_settings);
-        assert_eq!(ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP, result.unwrap_err());
+        let err = error_builder("group", ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
+        assert_eq!(err, result.unwrap_err());
     }
 }
