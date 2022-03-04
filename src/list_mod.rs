@@ -1,7 +1,7 @@
 use crate::{settings_mod::Settings, MetaFuncRegex};
 
 impl MetaFuncRegex {
-    pub fn make_list(
+    pub fn list(
         self,
         expression: &str,
         settings: &Settings,
@@ -9,7 +9,7 @@ impl MetaFuncRegex {
         let mut final_result = expression.to_string();
         final_result = format!("[{}]", final_result);
 
-        let final_result = self.make_literal_exp(&final_result, &settings);
+        let final_result = self.literal_exp(&final_result, &settings);
         if let Ok(lit_exp) = final_result {
             Ok(lit_exp)
         } else {
@@ -19,7 +19,7 @@ impl MetaFuncRegex {
 
     pub fn into_list(self, settings: &Settings) -> Result<MetaFuncRegex, String> {
         let raw_result = format!("[{}]", self.0);
-        let final_result = MetaFuncRegex("".to_string()).make_literal_exp(&raw_result, &settings);
+        let final_result = MetaFuncRegex("".to_string()).literal_exp(&raw_result, &settings);
         if let Ok(lit_exp) = final_result {
             Ok(lit_exp)
         } else {
@@ -32,19 +32,19 @@ impl MetaFuncRegex {
 mod tests {
     use super::*;
     use self::MetaFuncRegex;
-    use crate::error_handling::*;
+    use crate::{error_handling::*, settings_mod::NO_SETTINGS};
 
     #[test]
     fn make_list_works() {
         let initial_exp = MetaFuncRegex::new("initial".to_string());
-        let result = initial_exp.make_list("abcd", &Settings::default()).unwrap();
+        let result = initial_exp.list("abcd", &NO_SETTINGS).unwrap();
         assert_eq!(result.0, "initial[abcd]");
     }
 
     #[test]
     fn make_list_not_works() {
         let initial_exp = MetaFuncRegex::new("initial".to_string());
-        let result = initial_exp.make_list("abcd", &Settings {
+        let result = initial_exp.list("abcd", &Settings {
             is_nil_or_more: true,
             is_one_or_more: true,
             ..Default::default()

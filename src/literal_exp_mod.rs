@@ -1,7 +1,7 @@
 use crate::{error_handling::*, settings_mod::Settings, MetaFuncRegex};
 
 impl MetaFuncRegex {
-    pub fn make_literal_exp(
+    pub fn literal_exp(
         mut self,
         expression: &str,
         settings: &Settings,
@@ -12,7 +12,7 @@ impl MetaFuncRegex {
         } else if settings.is_nil_or_more && settings.is_one_or_more {
             let err = error_builder(expression, ERR_STAR_AND_PLUS_EXP);
             Err(err)
-        } else if settings.exact_amount.is_some() && settings.range.is_some() {
+        } else if settings.exactly.is_some() && settings.range.is_some() {
             let err = error_builder(expression, ERR_RANGE_AND_EXACT_EXP);
             Err(err)
         } else {
@@ -20,6 +20,9 @@ impl MetaFuncRegex {
 
             if settings.with_left_boundary {
                 final_result = format!("{}{}", "\\b", final_result);
+            }
+            if settings.with_left_non_boundary {
+                final_result = format!("{}{}", "\\B", final_result);
             }
             if settings.range.is_some()
                 && (settings.range.unwrap().0.is_some() || settings.range.unwrap().1.is_some())
@@ -40,7 +43,7 @@ impl MetaFuncRegex {
 
                 final_result = format!("{}{}", final_result, "}");
             }
-            if let Some(number) = settings.exact_amount {
+            if let Some(number) = settings.exactly {
                 final_result = format!("{}{}{}{}", final_result, "{", number, "}");
             }
             if settings.is_nil_or_more {
@@ -55,6 +58,9 @@ impl MetaFuncRegex {
             if settings.with_right_boundary {
                 final_result = format!("{}{}", final_result, "\\b");
             }
+            if settings.with_right_non_boundary {
+                final_result = format!("{}{}", final_result, "\\B");
+            }
 
             self.0 = format!("{}{}", &self.0, final_result);
             Ok(self)
@@ -64,35 +70,22 @@ impl MetaFuncRegex {
 
 #[cfg(test)]
 mod tests {
+    use crate::settings_mod::{NO_SETTINGS, OPTIONAL};
+
     use self::MetaFuncRegex;
     use super::*;
 
     #[test]
     fn make_exp_works() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp
-            .make_literal_exp("abcd", &Settings::default())
-            .unwrap();
+        let result = initial_exp.literal_exp("abcd", &NO_SETTINGS).unwrap();
         assert_eq!(result.0, "initial_abcd");
     }
 
     #[test]
     fn make_exp_optional_works() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp
-            .make_literal_exp(
-                "abcd",
-                &Settings {
-                    is_optional: true,
-                    is_nil_or_more: false,
-                    is_one_or_more: false,
-                    with_left_boundary: false,
-                    with_right_boundary: false,
-                    range: None,
-                    exact_amount: None,
-                },
-            )
-            .unwrap();
+        let result = initial_exp.literal_exp("abcd", &OPTIONAL).unwrap();
         assert_eq!(result.0, "initial_abcd?");
     }
 
@@ -100,16 +93,12 @@ mod tests {
     fn make_exp_range_works() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
         let result = initial_exp
-            .make_literal_exp(
+            .literal_exp(
                 "abcd",
                 &Settings {
                     is_optional: true,
-                    is_nil_or_more: false,
-                    is_one_or_more: false,
-                    with_left_boundary: false,
-                    with_right_boundary: false,
                     range: Some((None, Some(2))),
-                    exact_amount: None,
+                    ..Default::default()
                 },
             )
             .unwrap();
@@ -120,16 +109,12 @@ mod tests {
     fn make_exp_boundary_works() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
         let result = initial_exp
-            .make_literal_exp(
+            .literal_exp(
                 "abcd",
                 &Settings {
-                    is_optional: false,
-                    is_nil_or_more: false,
-                    is_one_or_more: false,
                     with_left_boundary: true,
                     with_right_boundary: true,
-                    range: None,
-                    exact_amount: None,
+                    ..Default::default()
                 },
             )
             .unwrap();
@@ -140,16 +125,14 @@ mod tests {
     fn make_exp_mixed_works() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
         let result = initial_exp
-            .make_literal_exp(
+            .literal_exp(
                 "ab\\scd",
                 &Settings {
                     is_optional: true,
-                    is_nil_or_more: false,
-                    is_one_or_more: false,
                     with_left_boundary: true,
                     with_right_boundary: true,
                     range: Some((None, Some(5))),
-                    exact_amount: None,
+                    ..Default::default()
                 },
             )
             .unwrap();
@@ -160,16 +143,12 @@ mod tests {
     #[test]
     fn make_exp_not_works_with_range_and_start_and_plus() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp.make_literal_exp(
+        let result = initial_exp.literal_exp(
             "ab\\scd",
             &Settings {
-                is_optional: false,
                 is_nil_or_more: true,
-                is_one_or_more: false,
-                with_left_boundary: false,
-                with_right_boundary: false,
                 range: Some((Some(2), None)),
-                exact_amount: None,
+                ..Default::default()
             },
         );
         let err = error_builder("ab\\scd", ERR_RANGE_AND_STAR_OR_PLUS_EXP);
@@ -180,16 +159,12 @@ mod tests {
     #[test]
     fn make_exp_not_works_with_star_and_plus() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp.make_literal_exp(
+        let result = initial_exp.literal_exp(
             "ab\\scd",
             &Settings {
-                is_optional: false,
                 is_nil_or_more: true,
                 is_one_or_more: true,
-                with_left_boundary: false,
-                with_right_boundary: false,
-                range: None,
-                exact_amount: None,
+                ..Default::default()
             },
         );
         let err = error_builder("ab\\scd", ERR_STAR_AND_PLUS_EXP);
@@ -200,16 +175,12 @@ mod tests {
     #[test]
     fn make_exp_not_works_with_range_and_exact() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp.make_literal_exp(
+        let result = initial_exp.literal_exp(
             "ab\\scd",
             &Settings {
-                is_optional: false,
-                is_nil_or_more: false,
-                is_one_or_more: false,
-                with_left_boundary: false,
-                with_right_boundary: false,
                 range: Some((Some(2), Some(10))),
-                exact_amount: Some(8),
+                exactly: Some(8),
+                ..Default::default()
             },
         );
         let err = error_builder("ab\\scd", ERR_RANGE_AND_EXACT_EXP);

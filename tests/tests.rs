@@ -1,40 +1,29 @@
-use meta_functional_regex::{
-    settings_mod::{GroupSettings, Settings},
-    MetaFuncRegex,
-};
+use meta_functional_regex::{settings_mod::*, MetaFuncRegex};
 
 #[test]
 fn complicated_regex() {
-    let start = MetaFuncRegex::new(r#"^"#.to_string());
-    let default_settings = &Settings::default();
-    let default_group_settings = &GroupSettings::default();
+    let start = MetaFuncRegex::new(r"^".to_string());
 
     let section_one = start
-        .make_group(r#"http|https|ftp"#, default_group_settings)
+        .group(r"http|https|ftp", &NO_GROUP_SETTINGS)
         .unwrap()
-        .make_literal_exp(":", default_settings)
+        .literal_exp(":", &NO_SETTINGS)
         .unwrap()
-        .make_list(
-            r#"\/"#,
+        .list(
+            r"\/",
             &Settings {
-                exact_amount: Some(2),
+                exactly: Some(2),
                 ..Default::default()
             },
         )
         .unwrap();
 
     let section_two = MetaFuncRegex::new_section()
-        .make_list(
-            r#"a-zA-Z0-9\-\."#,
-            &Settings {
-                is_one_or_more: true,
-                ..Default::default()
-            },
-        )
+        .list(r"a-zA-Z0-9\-\.", &ONE_OR_MORE)
         .unwrap()
-        .make_literal_exp(r#"\."#, default_settings)
+        .literal_exp(r"\.", &NO_SETTINGS)
         .unwrap()
-        .make_list(
+        .list(
             "a-zA-Z",
             &Settings {
                 range: Some((Some(2), Some(4))),
@@ -42,35 +31,21 @@ fn complicated_regex() {
             },
         )
         .unwrap()
-        .into_group(default_settings)
+        .into_group(&NO_SETTINGS)
         .unwrap()
-        .make_group(
-            ":[0-9]+",
-            &GroupSettings {
-                other: Settings {
-                    is_optional: true,
-                    ..Default::default()
-                },
-                ..Default::default()
-            },
-        )
+        .group(":[0-9]+", &OPTIONAL_GROUP)
         .unwrap()
-        .make_literal_exp(
-            r#"\/"#,
-            &Settings {
-                is_optional: true,
-                ..Default::default()
-            },
-        )
+        .literal_exp(r"\/", &OPTIONAL)
         .unwrap();
 
     let section_three = MetaFuncRegex::new_section()
-        .make_literal_exp("a-zA-Z0-9", default_settings)
+        .literal_exp("a-zA-Z0-9", &NO_SETTINGS)
         .unwrap()
-        .make_literal_exp(r#"\-\._\?\,\'\/\\\+&amp;%\$#\=~"#, default_settings)
+        .literal_exp(r"\-\._\?\,\'\/\\\+&amp;%\$#\=~", &NO_SETTINGS)
         .unwrap()
-        .into_list(&Settings {is_nil_or_more: true, ..Default::default()}).unwrap()
-        .into_group(default_settings)
+        .into_list(&NIL_OR_MORE)
+        .unwrap()
+        .into_group(&NO_SETTINGS)
         .unwrap();
 
     let result = format!(
@@ -79,7 +54,7 @@ fn complicated_regex() {
         section_two.get_regex(),
         section_three.get_regex()
     );
-    let the_regex = r#"^(http|https|ftp):[\/]{2}([a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,4})(:[0-9]+)?\/?([a-zA-Z0-9\-\._\?\,\'\/\\\+&amp;%\$#\=~]*)"#;
+    let the_regex = r"^(http|https|ftp):[\/]{2}([a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,4})(:[0-9]+)?\/?([a-zA-Z0-9\-\._\?\,\'\/\\\+&amp;%\$#\=~]*)";
 
     assert_eq!(result, the_regex);
 }

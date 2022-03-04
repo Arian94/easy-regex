@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl MetaFuncRegex {
-    pub fn make_group(
+    pub fn group(
         self,
         expression: &str,
         settings: &GroupSettings,
@@ -27,6 +27,14 @@ impl MetaFuncRegex {
         } else if settings.is_negative_lookahead && settings.other.is_optional {
             let err = error_builder(expression, ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
             Err(err)
+        } else if (settings.is_negative_lookahead || settings.is_positive_lookahead)
+            && (settings.other.range.is_some() || settings.other.exactly.is_some())
+        {
+            let err = error_builder(
+                expression,
+                ERR_POSITIVE_OR_NEGATIVE_LOOKAHEAD_WITH_RANGE_OR_EXACT_REPETITION_GROUP,
+            );
+            Err(err)
         } else {
             if settings.is_non_capture {
                 final_result = format!("{}{}{}", "(?:", final_result, ")");
@@ -38,7 +46,7 @@ impl MetaFuncRegex {
                 final_result = format!("{}{}{}", "(", final_result, ")");
             }
 
-            let final_result = self.make_literal_exp(&final_result, &settings.other);
+            let final_result = self.literal_exp(&final_result, &settings.other);
             if let Ok(lit_exp) = final_result {
                 Ok(lit_exp)
             } else {
@@ -49,7 +57,7 @@ impl MetaFuncRegex {
 
     pub fn into_group(self, settings: &Settings) -> Result<MetaFuncRegex, String> {
         let raw_result = format!("({})", self.0);
-        let final_result = MetaFuncRegex("".to_string()).make_literal_exp(&raw_result, &settings);
+        let final_result = MetaFuncRegex("".to_string()).literal_exp(&raw_result, &settings);
         if let Ok(lit_exp) = final_result {
             Ok(lit_exp)
         } else {
@@ -77,12 +85,12 @@ impl MetaFuncRegex {
 mod tests {
     use self::MetaFuncRegex;
     use super::*;
-    use crate::settings_mod::Settings;
+    use crate::settings_mod::*;
 
     #[test]
     fn make_group_works() {
         let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp.make_group("group", &GroupSettings::default());
+        let result = initial_exp.group("group", &NO_GROUP_SETTINGS);
         assert_eq!("initial_(group)", result.unwrap().0);
     }
 
@@ -99,14 +107,14 @@ mod tests {
             is_negative_lookahead: false,
         };
 
-        let result = initial_exp.make_group("group", &group_settings);
+        let result = initial_exp.group("group", &group_settings);
         assert_eq!("^(?:group)?", result.unwrap().0);
     }
 
     #[test]
     fn into_group_works() {
         let initial_exp = MetaFuncRegex::new("group".to_string());
-        let result = initial_exp.into_group(&Settings::default());
+        let result = initial_exp.into_group(&NO_SETTINGS);
 
         assert_eq!("(group)", result.unwrap().0);
     }
@@ -114,13 +122,7 @@ mod tests {
     #[test]
     fn into_negative_group_works_with_bug() {
         let initial_exp = MetaFuncRegex::new("group".to_string());
-        let result = initial_exp.into_negative_group().make_literal_exp(
-            "",
-            &Settings {
-                is_optional: true,
-                ..Default::default()
-            },
-        );
+        let result = initial_exp.into_negative_group().literal_exp("", &OPTIONAL);
 
         assert_eq!("(?!group)?", result.unwrap().0); // this is invalid regex, a false positive.
     }
@@ -139,7 +141,7 @@ mod tests {
             is_negative_lookahead: true,
         };
 
-        let result = initial_exp.make_group("group", &group_settings);
+        let result = initial_exp.group("group", &group_settings);
         let err = error_builder("group", ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
         assert_eq!(err, result.unwrap_err());
     }

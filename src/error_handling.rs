@@ -11,6 +11,8 @@ pub const ERR_OPTIONAL_POSITIVE_LOOKAHEAD_GROUP: &str =
     "group cannot be positive lookahead and optional at the same time.";
 pub const ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP: &str =
     "group cannot be negative lookahead and optional at the same time.";
+pub const ERR_POSITIVE_OR_NEGATIVE_LOOKAHEAD_WITH_RANGE_OR_EXACT_REPETITION_GROUP: &str =
+    "group cannot be positive/negative lookahead having range or exact repitition at the same time.";
 
 pub fn error_builder(expression: &str, err_desc: &str) -> String {
     format!("invalid regex in {}: {}.", expression, err_desc)
