@@ -3,6 +3,11 @@ pub mod literal_exp_mod;
 pub mod group_mod;
 pub mod list_mod;
 pub mod settings_mod;
+pub mod collection;
+pub mod head_or_tail_mod;
+
+#[macro_use]
+extern crate lazy_static;
 
 #[derive(Debug, Clone)]
 pub struct MetaFuncRegex(String);

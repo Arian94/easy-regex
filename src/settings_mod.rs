@@ -44,7 +44,8 @@ impl Default for GroupSettings {
     }
 }
 
-pub const NO_SETTINGS: Settings = Settings {
+lazy_static! {
+pub static ref NO_SETTINGS: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -55,7 +56,8 @@ pub const NO_SETTINGS: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const OPTIONAL: Settings = Settings {
+
+pub static ref OPTIONAL: Settings = Settings {
     is_optional: true,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -66,7 +68,7 @@ pub const OPTIONAL: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const ONE_OR_MORE: Settings = Settings {
+pub static ref ONE_OR_MORE: Settings = Settings {
     is_optional: false,
     is_one_or_more: true,
     is_nil_or_more: false,
@@ -77,7 +79,7 @@ pub const ONE_OR_MORE: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const NIL_OR_MORE: Settings = Settings {
+pub static ref NIL_OR_MORE: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: true,
@@ -88,7 +90,7 @@ pub const NIL_OR_MORE: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const LEFT_BOUNDARY: Settings = Settings {
+pub static ref LEFT_BOUNDARY: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -99,7 +101,7 @@ pub const LEFT_BOUNDARY: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const RIGHT_BOUNDARY: Settings = Settings {
+pub static ref RIGHT_BOUNDARY: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -110,7 +112,7 @@ pub const RIGHT_BOUNDARY: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const BOTH_BOUNDARY: Settings = Settings {
+pub static ref BOTH_BOUNDARY: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -121,7 +123,7 @@ pub const BOTH_BOUNDARY: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const LEFT_NON_BOUNDARY: Settings = Settings {
+pub static ref LEFT_NON_BOUNDARY: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -132,7 +134,7 @@ pub const LEFT_NON_BOUNDARY: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const RIGHT_NON_BOUNDARY: Settings = Settings {
+pub static ref RIGHT_NON_BOUNDARY: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -143,7 +145,7 @@ pub const RIGHT_NON_BOUNDARY: Settings = Settings {
     range: None,
     exactly: None,
 };
-pub const BOTH_NON_BOUNDARY: Settings = Settings {
+pub static ref BOTH_NON_BOUNDARY: Settings = Settings {
     is_optional: false,
     is_one_or_more: false,
     is_nil_or_more: false,
@@ -156,7 +158,7 @@ pub const BOTH_NON_BOUNDARY: Settings = Settings {
 };
 
 ///////////////////////////////////// GROUP ////////////////////////////////////////////
-pub const NO_GROUP_SETTINGS: GroupSettings = GroupSettings {
+pub static ref NO_GROUP_SETTINGS: GroupSettings = GroupSettings {
     other: Settings {
         is_optional: false,
         is_one_or_more: false,
@@ -172,7 +174,7 @@ pub const NO_GROUP_SETTINGS: GroupSettings = GroupSettings {
     is_negative_lookahead: false,
     is_positive_lookahead: false,
 };
-pub const OPTIONAL_GROUP: GroupSettings = GroupSettings {
+pub static ref OPTIONAL_GROUP: GroupSettings = GroupSettings {
     other: Settings {
         is_optional: true,
         is_one_or_more: false,
@@ -188,7 +190,7 @@ pub const OPTIONAL_GROUP: GroupSettings = GroupSettings {
     is_negative_lookahead: false,
     is_positive_lookahead: false,
 };
-pub const NON_CAPTURE: GroupSettings = GroupSettings {
+pub static ref NON_CAPTURE: GroupSettings = GroupSettings {
     other: Settings {
         is_optional: false,
         is_one_or_more: false,
@@ -204,7 +206,7 @@ pub const NON_CAPTURE: GroupSettings = GroupSettings {
     is_negative_lookahead: false,
     is_positive_lookahead: false,
 };
-pub const NEGATIVE_LOOKAHEAD: GroupSettings = GroupSettings {
+pub static ref NEGATIVE_LOOKAHEAD: GroupSettings = GroupSettings {
     other: Settings {
         is_optional: false,
         is_one_or_more: false,
@@ -220,7 +222,7 @@ pub const NEGATIVE_LOOKAHEAD: GroupSettings = GroupSettings {
     is_negative_lookahead: true,
     is_positive_lookahead: false,
 };
-pub const POSITIVE_LOOKAHEAD: GroupSettings = GroupSettings {
+pub static ref POSITIVE_LOOKAHEAD: GroupSettings = GroupSettings {
     other: Settings {
         is_optional: false,
         is_one_or_more: false,
@@ -236,3 +238,4 @@ pub const POSITIVE_LOOKAHEAD: GroupSettings = GroupSettings {
     is_negative_lookahead: false,
     is_positive_lookahead: true,
 };
+}

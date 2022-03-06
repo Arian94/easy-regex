@@ -13,26 +13,26 @@ impl MetaFuncRegex {
         let mut final_result = expression.to_string();
 
         if settings.is_non_capture && settings.is_positive_lookahead {
-            let err = error_builder(expression, ERR_NON_CAPTURE_POSITIVE_LOOKAHEAD_GROUP);
+            let err = error_builder(expression, &ERR_NON_CAPTURE_POSITIVE_LOOKAHEAD_GROUP);
             Err(err)
         } else if settings.is_non_capture && settings.is_negative_lookahead {
-            let err = error_builder(expression, ERR_NONE_CAPTURE_NEGATIVE_LOOKAHEAD_GROUP);
+            let err = error_builder(expression, &ERR_NONE_CAPTURE_NEGATIVE_LOOKAHEAD_GROUP);
             Err(err)
         } else if settings.is_positive_lookahead && settings.is_negative_lookahead {
-            let err = error_builder(expression, ERR_POSITIVE_NEGATIVE_LOOKAHEAD_GROUP);
+            let err = error_builder(expression, &ERR_POSITIVE_NEGATIVE_LOOKAHEAD_GROUP);
             Err(err)
         } else if settings.is_positive_lookahead && settings.other.is_optional {
-            let err = error_builder(expression, ERR_OPTIONAL_POSITIVE_LOOKAHEAD_GROUP);
+            let err = error_builder(expression, &ERR_OPTIONAL_POSITIVE_LOOKAHEAD_GROUP);
             Err(err)
         } else if settings.is_negative_lookahead && settings.other.is_optional {
-            let err = error_builder(expression, ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
+            let err = error_builder(expression, &ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
             Err(err)
         } else if (settings.is_negative_lookahead || settings.is_positive_lookahead)
             && (settings.other.range.is_some() || settings.other.exactly.is_some())
         {
             let err = error_builder(
                 expression,
-                ERR_POSITIVE_OR_NEGATIVE_LOOKAHEAD_WITH_RANGE_OR_EXACT_REPETITION_GROUP,
+                &ERR_POSITIVE_OR_NEGATIVE_LOOKAHEAD_WITH_RANGE_OR_EXACT_REPETITION_GROUP,
             );
             Err(err)
         } else {
@@ -65,19 +65,19 @@ impl MetaFuncRegex {
         }
     }
 
-    pub fn into_non_capture_group(mut self) -> MetaFuncRegex {
-        self.0 = format!("(?:{})", self.0);
-        self
+    pub fn into_non_capture_group(self) -> MetaFuncRegex {
+        let result = format!("(?:{})", self.0);
+        MetaFuncRegex(result)
     }
 
-    pub fn into_positive_group(mut self) -> MetaFuncRegex {
-        self.0 = format!("(?={})", self.0);
-        self
+    pub fn into_positive_group(self) -> MetaFuncRegex {
+        let result = format!("(?={})", self.0);
+        MetaFuncRegex(result)
     }
 
-    pub fn into_negative_group(mut self) -> MetaFuncRegex {
-        self.0 = format!("(?!{})", self.0);
-        self
+    pub fn into_negative_group(self) -> MetaFuncRegex {
+        let result = format!("(?!{})", self.0);
+        MetaFuncRegex(result)
     }
 }
 
@@ -142,7 +142,7 @@ mod tests {
         };
 
         let result = initial_exp.group("group", &group_settings);
-        let err = error_builder("group", ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
+        let err = error_builder("group", &ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
         assert_eq!(err, result.unwrap_err());
     }
 }

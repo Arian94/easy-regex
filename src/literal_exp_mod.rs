@@ -2,18 +2,18 @@ use crate::{error_handling::*, settings_mod::Settings, MetaFuncRegex};
 
 impl MetaFuncRegex {
     pub fn literal_exp(
-        mut self,
+        self,
         expression: &str,
         settings: &Settings,
     ) -> Result<MetaFuncRegex, String> {
         if settings.range.is_some() && (settings.is_nil_or_more || settings.is_one_or_more) {
-            let err = error_builder(expression, ERR_RANGE_AND_STAR_OR_PLUS_EXP);
+            let err = error_builder(expression, &ERR_RANGE_AND_STAR_OR_PLUS_EXP);
             Err(err)
         } else if settings.is_nil_or_more && settings.is_one_or_more {
-            let err = error_builder(expression, ERR_STAR_AND_PLUS_EXP);
+            let err = error_builder(expression, &ERR_STAR_AND_PLUS_EXP);
             Err(err)
         } else if settings.exactly.is_some() && settings.range.is_some() {
-            let err = error_builder(expression, ERR_RANGE_AND_EXACT_EXP);
+            let err = error_builder(expression, &ERR_RANGE_AND_EXACT_EXP);
             Err(err)
         } else {
             let mut final_result = expression.to_string();
@@ -62,8 +62,8 @@ impl MetaFuncRegex {
                 final_result = format!("{}{}", final_result, "\\B");
             }
 
-            self.0 = format!("{}{}", &self.0, final_result);
-            Ok(self)
+            final_result = format!("{}{}", &self.0, final_result);
+            Ok(MetaFuncRegex(final_result))
         }
     }
 }
@@ -151,7 +151,7 @@ mod tests {
                 ..Default::default()
             },
         );
-        let err = error_builder("ab\\scd", ERR_RANGE_AND_STAR_OR_PLUS_EXP);
+        let err = error_builder("ab\\scd", &ERR_RANGE_AND_STAR_OR_PLUS_EXP);
 
         assert_eq!(err, result.unwrap_err());
     }
@@ -167,7 +167,7 @@ mod tests {
                 ..Default::default()
             },
         );
-        let err = error_builder("ab\\scd", ERR_STAR_AND_PLUS_EXP);
+        let err = error_builder("ab\\scd", &ERR_STAR_AND_PLUS_EXP);
 
         assert_eq!(err, result.unwrap_err());
     }
@@ -183,7 +183,7 @@ mod tests {
                 ..Default::default()
             },
         );
-        let err = error_builder("ab\\scd", ERR_RANGE_AND_EXACT_EXP);
+        let err = error_builder("ab\\scd", &ERR_RANGE_AND_EXACT_EXP);
 
         assert_eq!(err, result.unwrap_err());
     }

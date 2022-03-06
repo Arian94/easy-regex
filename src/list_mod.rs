@@ -49,7 +49,7 @@ mod tests {
             is_one_or_more: true,
             ..Default::default()
         });
-        let err = error_builder("[abcd]", ERR_STAR_AND_PLUS_EXP);
+        let err = error_builder("[abcd]", &ERR_STAR_AND_PLUS_EXP);
 
         assert_eq!(err, result.unwrap_err());
     }
