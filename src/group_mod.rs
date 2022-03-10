@@ -4,14 +4,14 @@ use crate::{
 };
 
 impl EasyRegex {
-    pub fn group(self, expression: &str, settings: &GroupSettings) -> EasyRegex {
+    pub fn group(self, expression: &str, group_sttings: &GroupSettings) -> Self {
         let mut final_result = EasyRegex::new_section();
 
         // to make the regex itself clearer, this extra if condition is added.
-        if settings.other.flags.is_some() && settings.is_non_capture {
+        if group_sttings.other.flags.is_some() && group_sttings.is_non_capture {
             final_result.0 = format!(
                 "({}:{})",
-                settings.other.flags.unwrap().as_str(),
+                group_sttings.other.flags.unwrap().as_str(),
                 expression
             );
         } else {
@@ -19,15 +19,15 @@ impl EasyRegex {
                 .literal(
                     expression,
                     &Settings {
-                        flags: settings.other.flags,
+                        flags: group_sttings.other.flags,
                         ..Default::default()
                     },
                 )
                 .into_group(&Settings {
                     flags: None,
-                    ..settings.other
+                    ..group_sttings.other
                 });
-            if settings.is_non_capture {
+            if group_sttings.is_non_capture {
                 final_result.0.insert_str(1, "?:");
             }
         }
@@ -35,93 +35,98 @@ impl EasyRegex {
         self.literal(&final_result.0, &DEFAULT)
     }
 
-    pub fn into_group(self, settings: &Settings) -> EasyRegex {
+    pub fn named_group(self, name: &str, expression: &str, group_settings: &GroupSettings) -> Self{
+        let final_result = format!("?P<{}>{}", name, expression);
+        self.group(&final_result, &group_settings)
+    }
+
+    pub fn into_group(self, settings: &Settings) -> Self {
         let raw_result = format!("({})", self.0);
         let final_result = EasyRegex(String::new()).literal(&raw_result, &settings);
         final_result
     }
 
-    pub fn into_non_capturing(self) -> EasyRegex {
+    pub fn into_non_capturing(self) -> Self {
         let result = format!("(?:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_insensitive_group(self) -> EasyRegex {
+    pub fn into_insensitive_group(self) -> Self {
         let result = format!("((?i){})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_multline_group(self) -> EasyRegex {
+    pub fn into_multline_group(self) -> Self {
         let result = format!("((?m){})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_dot_match_newline_group(self) -> EasyRegex {
+    pub fn into_dot_match_newline_group(self) -> Self {
         let result = format!("((?s){})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_ignore_whitespace_group(self) -> EasyRegex {
+    pub fn into_ignore_whitespace_group(self) -> Self {
         let result = format!("((?x){})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_insensitive_non_capturing(self) -> EasyRegex {
+    pub fn into_insensitive_non_capturing(self) -> Self {
         let result = format!("(?i:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_multiline_non_capturing(self) -> EasyRegex {
+    pub fn into_multiline_non_capturing(self) -> Self {
         let result = format!("(?m:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_dot_match_newline_non_capturing(self) -> EasyRegex {
+    pub fn into_dot_match_newline_non_capturing(self) -> Self {
         let result = format!("(?s:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_ignore_whitespace_non_capturing(self) -> EasyRegex {
+    pub fn into_ignore_whitespace_non_capturing(self) -> Self {
         let result = format!("(?x:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_sensitive_group(self) -> EasyRegex {
+    pub fn into_sensitive_group(self) -> Self {
         let result = format!("(?-i){}", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_single_line_group(self) -> EasyRegex {
+    pub fn into_single_line_group(self) -> Self {
         let result = format!("(?-m){}", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_dot_dismatch_newline_group(self) -> EasyRegex {
+    pub fn into_dot_dismatch_newline_group(self) -> Self {
         let result = format!("(?-s){}", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_include_whitespace_group(self) -> EasyRegex {
+    pub fn into_include_whitespace_group(self) -> Self {
         let result = format!("(?-x){}", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_sensitive_non_capturing(self) -> EasyRegex {
+    pub fn into_sensitive_non_capturing(self) -> Self {
         let result = format!("(?-i:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_single_line_non_capturing(self) -> EasyRegex {
+    pub fn into_single_line_non_capturing(self) -> Self {
         let result = format!("(?-m:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_dot_dismatch_newline_non_capturing(self) -> EasyRegex {
+    pub fn into_dot_dismatch_newline_non_capturing(self) -> Self {
         let result = format!("(?-s:{})", self.0);
         EasyRegex(result)
     }
 
-    pub fn into_include_whitespace_non_capturing_group(self) -> EasyRegex {
+    pub fn into_include_whitespace_non_capturing_group(self) -> Self {
         let result = format!("(?-x:{})", self.0);
         EasyRegex(result)
     }

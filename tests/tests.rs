@@ -54,7 +54,8 @@ fn complicated_regex() {
 // (25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b
 #[test]
 fn capturing_ip_address() {
-    let result = EasyRegex::new_section().word_boundary()
+    let result = EasyRegex::new_section()
+        .word_boundary()
         .group("25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?", &DEFAULT_GROUP)
         .literal("\\.", &DEFAULT)
         .group("25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?", &DEFAULT_GROUP)
@@ -75,8 +76,13 @@ fn customized_regex() {
         .literal(" behind", &DEFAULT);
 
     assert_eq!(
-        // "(?i)(?:(?-i)leave it) behind",
         "(?i)(?-i:leave me) behind",
         result.get_regex().unwrap().as_str()
     );
+}
+
+#[test]
+fn customized_regex_with_named_groups() {
+    let result = EasyRegex::start_of_line().named_group("middle_name", "[a-z]", &OPTIONAL_GROUP);
+    assert_eq!("^(?P<middle_name>[a-z])?", result.get_regex().unwrap().as_str());
 }

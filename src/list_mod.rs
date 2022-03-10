@@ -20,7 +20,7 @@ impl EasyRegex {
 mod tests {
     use self::EasyRegex;
     use super::*;
-    use crate::settings_mod::DEFAULT;
+    use crate::settings_mod::{DEFAULT, Flags};
 
     #[test]
     fn list_works() {
@@ -30,7 +30,7 @@ mod tests {
     }
 
     #[test]
-    fn list_not_works() {
+    fn another_list_works() {
         let initial_exp = EasyRegex::new("initial");
         let result = initial_exp.list(
             "abcd",
@@ -40,19 +40,20 @@ mod tests {
                 ..Default::default()
             },
         );
-//         let re = regex::Regex::new(
-//             r"(?x)
-//   (?!P<y>\d{4}) # the year
-//   -
-//   (?!P<m>\d{2}) # the month
-//   -
-//   (?!P<d>\d{2}) # the day
-// ",
-//         )
-//         .unwrap();
-//         let before = "2012-03-14, 2013-01-01 and 2014-07-05";
-//         let after = re.replace_all(before, "$m/$d/$y");
-//         println!("{}", &after);
         assert_eq!("initial[abcd]*+", result.get_regex().unwrap().as_str());
+    }
+
+    #[test]
+    fn list_with_flag_and_settings_works() {
+        let result = EasyRegex::new_section().list(
+            "list",
+            &Settings {
+                range: Some((Some(2), None)),
+                flags: Some(Flags::Insensitive),
+                ..Default::default()
+            },
+        );
+
+        assert_eq!("(?i)[list]{2,}", result.0);
     }
 }
