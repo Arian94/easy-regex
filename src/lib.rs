@@ -1,4 +1,5 @@
-pub mod error_handling;
+use regex::{Regex, Error};
+
 pub mod literal_exp_mod;
 pub mod group_mod;
 pub mod list_mod;
@@ -10,18 +11,19 @@ pub mod head_or_tail_mod;
 extern crate lazy_static;
 
 #[derive(Debug, Clone)]
-pub struct MetaFuncRegex(String);
+pub struct EasyRegex(String);
 
-impl MetaFuncRegex {
-    pub fn new(raw: String) -> Self {
-        MetaFuncRegex(raw)
+impl EasyRegex {
+    pub fn new(raw: &str) -> Self {
+        EasyRegex(raw.to_string())
     }
 
     pub fn new_section() -> Self {
-        MetaFuncRegex(String::new())
+        EasyRegex(String::new())
     }
 
-    pub fn get_regex(self) -> String {
-        self.0
+    pub fn get_regex(self) -> Result<Regex, Error> {
+        let regex = regex::RegexBuilder::new(&self.0);
+        regex.build()
     }
 }

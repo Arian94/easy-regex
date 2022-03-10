@@ -1,21 +1,53 @@
-use crate::MetaFuncRegex;
+use crate::{EasyRegex, settings_mod::DEFAULT};
 
-impl MetaFuncRegex {
-    pub fn start_of_line() -> MetaFuncRegex {
-        MetaFuncRegex("^".to_string())
+impl EasyRegex {
+    pub fn start_of_line() -> Self {
+        EasyRegex("^".to_string())
     }
 
-    pub fn or(self) -> MetaFuncRegex {
-        let result = format!("|{}", self.0);
-        MetaFuncRegex(result)
+    pub fn only_the_beginning() -> Self {
+        EasyRegex("\\A".to_string())
     }
 
-    pub fn not(self, expression: &str) -> MetaFuncRegex {
+    pub fn word_boundary(self) -> Self {
+        self.literal("\\b", &DEFAULT)
+    }
+
+    pub fn non_word_boundary(self) -> Self {
+        self.literal("\\B", &DEFAULT)
+    }
+
+    pub fn or(self) -> Self {
+        let result = format!("{}|", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn not(self, expression: &str) -> Self {
         let result = format!("{}[^{}]", self.0, expression);
-        MetaFuncRegex(result)
+        EasyRegex(result)
     }
 
-    pub fn end_of_line(self) -> MetaFuncRegex {
-        MetaFuncRegex("$".to_string())
+    pub fn end_of_line(self) -> Self {
+        EasyRegex("$".to_string())
+    }
+
+    pub fn only_the_end(self) -> Self {
+        EasyRegex("\\z".to_string())
+    }
+
+    pub fn insensitive() -> Self {
+        EasyRegex("(?i)".to_string())
+    }
+
+    pub fn multiline() -> Self {
+        EasyRegex("(?m)".to_string())
+    }
+
+    pub fn dot_match_newline() -> Self {
+        EasyRegex("(?s)".to_string())
+    }
+
+    pub fn ignore_whitespace() -> Self {
+        EasyRegex("(?x)".to_string())
     }
 }

@@ -1,148 +1,232 @@
 use crate::{
-    error_handling::*,
-    settings_mod::{GroupSettings, Settings},
-    MetaFuncRegex,
+    settings_mod::{GroupSettings, Settings, DEFAULT},
+    EasyRegex,
 };
 
-impl MetaFuncRegex {
-    pub fn group(
-        self,
-        expression: &str,
-        settings: &GroupSettings,
-    ) -> Result<MetaFuncRegex, String> {
-        let mut final_result = expression.to_string();
+impl EasyRegex {
+    pub fn group(self, expression: &str, settings: &GroupSettings) -> EasyRegex {
+        let mut final_result = EasyRegex::new_section();
 
-        if settings.is_non_capture && settings.is_positive_lookahead {
-            let err = error_builder(expression, &ERR_NON_CAPTURE_POSITIVE_LOOKAHEAD_GROUP);
-            Err(err)
-        } else if settings.is_non_capture && settings.is_negative_lookahead {
-            let err = error_builder(expression, &ERR_NONE_CAPTURE_NEGATIVE_LOOKAHEAD_GROUP);
-            Err(err)
-        } else if settings.is_positive_lookahead && settings.is_negative_lookahead {
-            let err = error_builder(expression, &ERR_POSITIVE_NEGATIVE_LOOKAHEAD_GROUP);
-            Err(err)
-        } else if settings.is_positive_lookahead && settings.other.is_optional {
-            let err = error_builder(expression, &ERR_OPTIONAL_POSITIVE_LOOKAHEAD_GROUP);
-            Err(err)
-        } else if settings.is_negative_lookahead && settings.other.is_optional {
-            let err = error_builder(expression, &ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
-            Err(err)
-        } else if (settings.is_negative_lookahead || settings.is_positive_lookahead)
-            && (settings.other.range.is_some() || settings.other.exactly.is_some())
-        {
-            let err = error_builder(
-                expression,
-                &ERR_POSITIVE_OR_NEGATIVE_LOOKAHEAD_WITH_RANGE_OR_EXACT_REPETITION_GROUP,
+        // to make the regex itself clearer, this extra if condition is added.
+        if settings.other.flags.is_some() && settings.is_non_capture {
+            final_result.0 = format!(
+                "({}:{})",
+                settings.other.flags.unwrap().as_str(),
+                expression
             );
-            Err(err)
         } else {
+            final_result = final_result
+                .literal(
+                    expression,
+                    &Settings {
+                        flags: settings.other.flags,
+                        ..Default::default()
+                    },
+                )
+                .into_group(&Settings {
+                    flags: None,
+                    ..settings.other
+                });
             if settings.is_non_capture {
-                final_result = format!("{}{}{}", "(?:", final_result, ")");
-            } else if settings.is_positive_lookahead {
-                final_result = format!("{}{}{}", "(?=", final_result, ")");
-            } else if settings.is_negative_lookahead {
-                final_result = format!("{}{}{}", "(?!", final_result, ")");
-            } else {
-                final_result = format!("{}{}{}", "(", final_result, ")");
-            }
-
-            let final_result = self.literal_exp(&final_result, &settings.other);
-            if let Ok(lit_exp) = final_result {
-                Ok(lit_exp)
-            } else {
-                Err(final_result.unwrap_err())
+                final_result.0.insert_str(1, "?:");
             }
         }
+
+        self.literal(&final_result.0, &DEFAULT)
     }
 
-    pub fn into_group(self, settings: &Settings) -> Result<MetaFuncRegex, String> {
+    pub fn into_group(self, settings: &Settings) -> EasyRegex {
         let raw_result = format!("({})", self.0);
-        let final_result = MetaFuncRegex("".to_string()).literal_exp(&raw_result, &settings);
-        if let Ok(lit_exp) = final_result {
-            Ok(lit_exp)
-        } else {
-            Err(final_result.unwrap_err())
-        }
+        let final_result = EasyRegex(String::new()).literal(&raw_result, &settings);
+        final_result
     }
 
-    pub fn into_non_capture_group(self) -> MetaFuncRegex {
+    pub fn into_non_capturing(self) -> EasyRegex {
         let result = format!("(?:{})", self.0);
-        MetaFuncRegex(result)
+        EasyRegex(result)
     }
 
-    pub fn into_positive_group(self) -> MetaFuncRegex {
-        let result = format!("(?={})", self.0);
-        MetaFuncRegex(result)
+    pub fn into_insensitive_group(self) -> EasyRegex {
+        let result = format!("((?i){})", self.0);
+        EasyRegex(result)
     }
 
-    pub fn into_negative_group(self) -> MetaFuncRegex {
-        let result = format!("(?!{})", self.0);
-        MetaFuncRegex(result)
+    pub fn into_multline_group(self) -> EasyRegex {
+        let result = format!("((?m){})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_dot_match_newline_group(self) -> EasyRegex {
+        let result = format!("((?s){})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_ignore_whitespace_group(self) -> EasyRegex {
+        let result = format!("((?x){})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_insensitive_non_capturing(self) -> EasyRegex {
+        let result = format!("(?i:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_multiline_non_capturing(self) -> EasyRegex {
+        let result = format!("(?m:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_dot_match_newline_non_capturing(self) -> EasyRegex {
+        let result = format!("(?s:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_ignore_whitespace_non_capturing(self) -> EasyRegex {
+        let result = format!("(?x:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_sensitive_group(self) -> EasyRegex {
+        let result = format!("(?-i){}", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_single_line_group(self) -> EasyRegex {
+        let result = format!("(?-m){}", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_dot_dismatch_newline_group(self) -> EasyRegex {
+        let result = format!("(?-s){}", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_include_whitespace_group(self) -> EasyRegex {
+        let result = format!("(?-x){}", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_sensitive_non_capturing(self) -> EasyRegex {
+        let result = format!("(?-i:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_single_line_non_capturing(self) -> EasyRegex {
+        let result = format!("(?-m:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_dot_dismatch_newline_non_capturing(self) -> EasyRegex {
+        let result = format!("(?-s:{})", self.0);
+        EasyRegex(result)
+    }
+
+    pub fn into_include_whitespace_non_capturing_group(self) -> EasyRegex {
+        let result = format!("(?-x:{})", self.0);
+        EasyRegex(result)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use self::MetaFuncRegex;
+    use self::EasyRegex;
     use super::*;
     use crate::settings_mod::*;
 
     #[test]
-    fn make_group_works() {
-        let initial_exp = MetaFuncRegex::new("initial_".to_string());
-        let result = initial_exp.group("group", &NO_GROUP_SETTINGS);
-        assert_eq!("initial_(group)", result.unwrap().0);
+    fn group_works() {
+        let initial_exp = EasyRegex::new("initial_");
+        let result = initial_exp.group("group", &DEFAULT_GROUP);
+        assert_eq!("initial_(group)", result.0);
     }
 
     #[test]
-    fn make_optional_non_capture_group_works() {
-        let initial_exp = MetaFuncRegex::new("^".to_string());
+    fn optional_non_capture_group_works() {
+        let initial_exp = EasyRegex::start_of_line();
         let group_settings = GroupSettings {
             other: Settings {
                 is_optional: true,
                 ..Default::default()
             },
             is_non_capture: true,
-            is_positive_lookahead: false,
-            is_negative_lookahead: false,
         };
 
         let result = initial_exp.group("group", &group_settings);
-        assert_eq!("^(?:group)?", result.unwrap().0);
+        assert_eq!("^(?:group)?", result.0);
+    }
+
+    #[test]
+    fn insensitive_group_works() {
+        let result = EasyRegex::start_of_line()
+            .group("group", &INSENSITIVE_GROUP)
+            .get_regex()
+            .unwrap();
+        assert_eq!("^((?i)group)", result.as_str());
+    }
+
+    #[test]
+    fn insensitive_non_capturing_group_works() {
+        let result = EasyRegex::start_of_line()
+            .group("group", &INSENSITIVE_NON_CAPTURE)
+            .get_regex()
+            .unwrap();
+        assert_eq!("^(?i:group)", result.as_str());
     }
 
     #[test]
     fn into_group_works() {
-        let initial_exp = MetaFuncRegex::new("group".to_string());
-        let result = initial_exp.into_group(&NO_SETTINGS);
+        let initial_exp = EasyRegex::new("group");
+        let result = initial_exp.into_group(&DEFAULT);
 
-        assert_eq!("(group)", result.unwrap().0);
-    }
-
-    #[test]
-    fn into_negative_group_works_with_bug() {
-        let initial_exp = MetaFuncRegex::new("group".to_string());
-        let result = initial_exp.into_negative_group().literal_exp("", &OPTIONAL);
-
-        assert_eq!("(?!group)?", result.unwrap().0); // this is invalid regex, a false positive.
+        assert_eq!("(group)", result.0);
     }
 
     ////////////////////////////////////////////////// ERRORS /////////////////////////////////////////////////////
-    #[test]
-    fn make_optional_negative_group_not_works() {
-        let initial_exp = MetaFuncRegex::new("^".to_string());
-        let group_settings = GroupSettings {
-            other: Settings {
-                is_optional: true,
-                ..Default::default()
-            },
-            is_non_capture: false,
-            is_positive_lookahead: false,
-            is_negative_lookahead: true,
-        };
+    // #[test]
+    //     fn into_negative_group_added_optional_exp_not_works() {
+    //         let initial_exp = MetaFuncRegex::new("group");
+    //         let result = initial_exp
+    //             // .into_negative_group()
+    //             .literal_exp(&String::new(), &OPTIONAL);
+    //         let err = result.get_regex().unwrap_err();
+    //         let re = regex::Regex::new("/(?!group)/").unwrap();
+    //         // regex::Regex::is_matchbuild(&re).unwrap();
+    //         // println!("{}", &after);
+    //         assert_eq!(
+    //             regex::Error::Syntax(
+    //                 "regex parse error:
+    //     (?!group)?
+    //     ^^^
+    // error: look-around, including look-ahead and look-behind, is not supported"
+    //                     .to_string()
+    //             ),
+    //             err
+    //         );
+    //     }
 
-        let result = initial_exp.group("group", &group_settings);
-        let err = error_builder("group", &ERR_OPTIONAL_NEGATIVE_LOOKAHEAD_GROUP);
-        assert_eq!(err, result.unwrap_err());
-    }
+    // #[test]
+    //     fn optional_negative_group_not_works() {
+    //         let initial_exp = MetaFuncRegex::new("^");
+    //         let group_settings = GroupSettings {
+    //             other: Settings {
+    //                 is_optional: true,
+    //                 ..Default::default()
+    //             },
+    //             is_non_capture: false,
+    //             flags: None,
+    //         };
+
+    //         let result = initial_exp.group("group", &group_settings);
+    //         let err = result.get_regex().unwrap_err();
+    //         assert_eq!(
+    //             regex::Error::Syntax(
+    //                 "regex parse error:
+    //     ^(?!group)?
+    //      ^^^
+    // error: look-around, including look-ahead and look-behind, is not supported"
+    //                     .to_string()
+    //             ),
+    //             err
+    //         );
+    //     }
 }
