@@ -3,7 +3,8 @@ name = "easy-regex"
 version = "0.1.0"
 edition = "2021"
 authors = ["arian pourarian <arianpourarian@gmail.com>"]
-description = "For long regex-es, this is a functional approach to make them easier to read with the help of metas. It also checks regex safety."
+description = "A functional approach backed by meta information to make long regex-es easier to create."
+repository = "https://github.com/Arian94/easy-regex.git"
 license = "MIT"
 
 
