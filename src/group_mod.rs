@@ -46,11 +46,17 @@ impl EasyRegex {
         final_result
     }
 
+    pub fn into_named_group(self, name: &str, settings: &Settings) -> Self {
+        let raw_result = format!("(?P<{}>{})", name, self.0);
+        let final_result = EasyRegex(String::new()).literal(&raw_result, &settings);
+        final_result
+    }
+
     pub fn into_non_capturing(self) -> Self {
         let result = format!("(?:{})", self.0);
         EasyRegex(result)
     }
-
+////////////////////////////////////////////////////////////////
     pub fn into_insensitive_group(self) -> Self {
         let result = format!("((?i){})", self.0);
         EasyRegex(result)
@@ -70,7 +76,7 @@ impl EasyRegex {
         let result = format!("((?x){})", self.0);
         EasyRegex(result)
     }
-
+////////////////////////////////////////////////////////////////
     pub fn into_insensitive_non_capturing(self) -> Self {
         let result = format!("(?i:{})", self.0);
         EasyRegex(result)
@@ -90,12 +96,11 @@ impl EasyRegex {
         let result = format!("(?x:{})", self.0);
         EasyRegex(result)
     }
-
+////////////////////////////////////////////////////////////////
     pub fn into_sensitive_group(self) -> Self {
         let result = format!("(?-i){}", self.0);
         EasyRegex(result)
     }
-
     pub fn into_single_line_group(self) -> Self {
         let result = format!("(?-m){}", self.0);
         EasyRegex(result)
@@ -110,7 +115,7 @@ impl EasyRegex {
         let result = format!("(?-x){}", self.0);
         EasyRegex(result)
     }
-
+////////////////////////////////////////////////////////////////
     pub fn into_sensitive_non_capturing(self) -> Self {
         let result = format!("(?-i:{})", self.0);
         EasyRegex(result)

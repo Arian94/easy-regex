@@ -3,8 +3,10 @@ name = "easy-regex"
 version = "0.1.1"
 edition = "2021"
 authors = ["arian pourarian <arianpourarian@gmail.com>"]
-description = "A functional approach backed by meta information to make long regex-es easier to create."
+description = "A functional approach backed by meta information to make long regex-es easier to create and read."
 repository = "https://github.com/Arian94/easy-regex.git"
+categories = ["text-processing", "development-tools"]
+keywords = ["regex", "readable", "easy"]
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
