@@ -6,7 +6,7 @@ authors = ["arian pourarian <arianpourarian@gmail.com>"]
 description = "A functional approach backed by meta information to make long regex-es easier to create."
 repository = "https://github.com/Arian94/easy-regex.git"
 license = "MIT"
-
+readme="README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
