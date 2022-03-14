@@ -1,3 +1,10 @@
+//! Creates a list of expressions.
+//! 
+//! Two methods are used to create a list. The main one is the [`list`](../struct.EasyRegex.html#method.list) method and the other is
+//! the [`into_list`](../struct.EasyRegex.html#method.into_list).
+//! They both use the [`literal`](../struct.EasyRegex.html#method.literal) method internally and in some ways are similar 
+//! to the [`group`](../struct.EasyRegex.html#method.group) and [`into_group`](../struct.EasyRegex.html#method.into_group) methods.
+
 use crate::{settings::Settings, EasyRegex};
 
 impl EasyRegex {

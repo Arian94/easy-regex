@@ -1,3 +1,7 @@
+//! Collection of static Group Settings.
+//! 
+//! These are adjusted **group settings** to be used in methods like [`group`](../../struct.EasyRegex.html#method.group) to save time and make the code more readable.
+
 use crate::settings::{Flags, GroupSettings, Settings};
 
 lazy_static! {

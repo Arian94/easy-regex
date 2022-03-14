@@ -1,3 +1,7 @@
+//! Collection of static Settings.
+//! 
+//! These are adjusted **base settings** to be used in methods like [`literal`](../../struct.EasyRegex.html#method.literal) to save time and make the code more readable.
+
 use crate::settings::{Settings, Flags};
 
 lazy_static! {

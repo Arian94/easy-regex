@@ -1,3 +1,10 @@
+//! Creates expressions to match literal characters.
+//! 
+//! The most basic way of writing regex using this crate is by calling the [`literal`](../struct.EasyRegex.html#method.literal) method.
+//! As the name implies, it's for creating regular expressions that should match characters literally.
+//! It cannot be used as the very first method but it is the backbone of some other important methods (e.g. [`group`](../struct.EasyRegex.html#method.group) method).
+//! It takes an expression and a set of settings and outputs an ```EasyRegex``` instance.
+
 use crate::{settings::*, EasyRegex};
 
 impl EasyRegex {

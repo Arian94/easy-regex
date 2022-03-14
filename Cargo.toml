@@ -1,12 +1,12 @@
 [package]
 name = "easy-regex"
-version = "0.7.3"
+version = "0.7.4"
 edition = "2021"
 authors = ["arian pourarian <arianpourarian@gmail.com>"]
-description = "A functional approach backed by meta information to make long regex-es easier to create and read."
+description = "A functional approach backed by meta information to make regular expressions easier to create and read."
 repository = "https://github.com/Arian94/easy-regex.git"
 categories = ["text-processing", "development-tools"]
-keywords = ["regex", "readable", "easy"]
+keywords = ["regex", "readable", "easy", "meta", "multi-language"]
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

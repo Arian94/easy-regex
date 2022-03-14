@@ -1,3 +1,13 @@
+//! Settings to be used as necessary meta information for patterns.
+//! 
+//! Here are the meta data such as flags, boundaries etc. needed to be added to regular expressions.
+//! For most methods except [`group`](../struct.EasyRegex.html#method.group) and [`named_group`](../struct.EasyRegex.html#method.named_group),
+//! the ```Settings``` struct would be used and for the two mentioned, the ```GroupSettings``` struct which 
+//! has one extra meta that is ```is_non_capture```.
+//! There is a default implemention for both structs to reduce typing repetitive meta over and over and shorten code length.
+//! Two more methods are provided for setting an exact or a range of repetitions in case of only declaring range or exact options.
+//! Those are ```exactly``` and ```range``` for ```base``` settings and ```grp_exactly``` and ```grp_range``` for ```group``` settings.
+
 pub mod base;
 pub mod group;
 

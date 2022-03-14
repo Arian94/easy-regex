@@ -1,3 +1,11 @@
+//! Includes methods for starting/ending chain of expressions.
+//! 
+//! This module includes methods which typically are useful to start or end a regular expression.
+//! Methods as [`start_of_line`](../struct.EasyRegex.html#method.start_of_line), [`only_the_beginning`](../struct.EasyRegex.html#method.only_the_beginning)
+//! and flag-related methods can only be used as the starting method and
+//! the others could be used in the middle or at the end of a regex, although methods like [`end_of_line`](../struct.EasyRegex.html#method.end_of_line) are meaningful 
+//! only when called as the final function.
+
 use crate::EasyRegex;
 
 impl EasyRegex {

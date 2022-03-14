@@ -1,3 +1,8 @@
+//! A handful of universal regular expressions.
+//! 
+//! This is a collection of the most used regular expressions to reduce making rudimentary mistakes and make the code even more readable.
+//! Except English, there are patterns for five other languages as Persian, French, German, Arabic and Chinese.
+
 lazy_static! {
     pub static ref ALPHA_NUMERIC: &'static str = "a-zA-Z0-9";
     pub static ref NUMERIC: &'static str = "0-9";

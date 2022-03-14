@@ -1,3 +1,10 @@
+//! Create a group pattern in many different ways as desired.
+//! 
+//! This module consists of methods needed to create a group in many different ways, having different options/settings.
+//! The main one is the [`group`](../struct.EasyRegex.html#method.group) method which takes an expression as argument and creates a group for it.
+//! Other methods starting with the ```into``` word followed by an underline makes all previously chained expressions into a group.
+//! They mostly take no arguments for settings and are useful to be added to the latter part of a method chain.
+
 use crate::{
     settings::{GroupSettings, Settings, base::DEFAULT},
     EasyRegex,
