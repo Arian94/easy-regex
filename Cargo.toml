@@ -1,6 +1,6 @@
 [package]
 name = "easy-regex"
-version = "0.1.1"
+version = "0.7.3"
 edition = "2021"
 authors = ["arian pourarian <arianpourarian@gmail.com>"]
 description = "A functional approach backed by meta information to make long regex-es easier to create and read."

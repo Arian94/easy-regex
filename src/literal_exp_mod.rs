@@ -1,55 +1,79 @@
-use crate::{settings_mod::Settings, EasyRegex};
+use crate::{settings::*, EasyRegex};
 
 impl EasyRegex {
+    /// To create a literal regular expression, this is the method can be used which
+    /// takes an expression (a segment of the total pattern) followed
+    /// by a set of settings (```Settings``` struct) that will be concatenated/inserted to the expression itself,
+    /// outputing the previous pattern as well as this one.
+    ///
+    /// ### Example:
+    ///
+    /// ```
+    /// use easy_regex::{EasyRegex, settings::base::DEFAULT};
+    /// 
+    /// let result = EasyRegex::new_section().literal("\\w", &DEFAULT);
+    /// assert_eq!("\\w", result.get_regex().unwrap().as_str());
+    /// ```
     pub fn literal(self, expression: &str, settings: &Settings) -> EasyRegex {
         let mut final_result = expression.to_string();
 
-        if settings.flags.is_some() {
-            let flag = settings.flags.unwrap().as_str();
-            final_result = format!("({}){}", flag, final_result);
-        } 
+        if let Some(flag) = settings.flags {
+            let mut stringified_flag = flag.as_str().to_string();
+            stringified_flag = format!("({})", stringified_flag);
+            stringified_flag.push_str(expression);
+            final_result = stringified_flag;
+        }
         if settings.with_left_boundary {
-            final_result = format!("{}{}", "\\b", final_result);
+            let mut boundary = String::from("\\b");
+            boundary.push_str(&final_result);
+            final_result = boundary;
         }
         if settings.with_left_non_boundary {
-            final_result = format!("{}{}", "\\B", final_result);
+            let mut boundary = String::from("\\B");
+            boundary.push_str(&final_result);
+            final_result = boundary;
         }
         if settings.range.is_some()
             && (settings.range.unwrap().0.is_some() || settings.range.unwrap().1.is_some())
         {
             let numbers = settings.range.unwrap();
 
-            final_result = format!("{}{}", final_result, "{");
+            final_result.push_str("{");
 
             if let Some(start_range) = numbers.0 {
-                final_result = format!("{}{}", final_result, start_range);
+                final_result.push_str(&start_range.to_string());
             }
 
-            final_result = format!("{}{}", final_result, ",");
+            final_result.push_str(",");
 
             if let Some(end_range) = numbers.1 {
-                final_result = format!("{}{}", final_result, end_range);
+                final_result.push_str(&end_range.to_string());
             }
 
-            final_result = format!("{}{}", final_result, "}");
+            final_result.push_str("}");
         }
         if let Some(number) = settings.exactly {
-            final_result = format!("{}{}{}{}", final_result, "{", number, "}");
+            final_result.push_str("{");
+            final_result.push_str(&number.to_string());
+            final_result.push_str("}");
         }
         if settings.is_nil_or_more {
-            final_result = format!("{}{}", final_result, "*");
+            final_result.push_str("*");
         }
         if settings.is_one_or_more {
-            final_result = format!("{}{}", final_result, "+");
+            final_result.push_str("+");
         }
         if settings.is_optional {
-            final_result = format!("{}{}", final_result, "?");
+            final_result.push_str("?");
+        }
+        if settings.is_optional_ungreedy {
+            final_result.push_str("??");
         }
         if settings.with_right_boundary {
-            final_result = format!("{}{}", final_result, "\\b");
+            final_result.push_str("\\b");
         }
         if settings.with_right_non_boundary {
-            final_result = format!("{}{}", final_result, "\\B");
+            final_result.push_str("\\B");
         }
 
         final_result = format!("{}{}", &self.0, final_result);
@@ -59,7 +83,7 @@ impl EasyRegex {
 
 #[cfg(test)]
 mod tests {
-    use crate::settings_mod::{DEFAULT, OPTIONAL};
+    use crate::settings::base::*;
 
     use self::EasyRegex;
     use super::*;

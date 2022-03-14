@@ -34,23 +34,24 @@ lazy_static! {
 
 #[cfg(test)]
 mod tests {
-    use crate::{collection::*, settings_mod::ONE_OR_MORE, EasyRegex};
+    use crate::{collection::*, settings::base::*, EasyRegex};
 
     #[test]
     fn persian_words_regex_works() {
         let result = EasyRegex::new_section().list(&PERSIAN_ALPHA_NUMERIC, &ONE_OR_MORE);
 
         let text = "سلام شماره من ۱۲۳۶ است";
-        let is_match = result.clone().get_regex().unwrap().is_match(text);
+        let is_match = result.clone().get_regex().unwrap().find_iter(text).count();
         result
             .get_regex()
             .unwrap()
-            .captures_iter(text)
-            .for_each(|mat| {
-                println!("{:?}", mat);
+            .find_iter(text)
+            .into_iter()
+            .for_each(|found| {
+                println!("{}", found.as_str());
             });
 
-        assert_eq!(true, is_match);
+        assert_eq!(5, is_match);
     }
 
     #[test]
