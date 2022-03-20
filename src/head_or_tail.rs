@@ -14,23 +14,6 @@ impl EasyRegex {
         EasyRegex("^".to_string())
     }
 
-    /// Creates an EasyRegex instance starting with the ```\A``` pattern.
-    pub fn only_the_beginning() -> Self {
-        EasyRegex("\\A".to_string())
-    }
-
-    /// Adds the ```\b``` pattern, asserts position at a word boundary.
-    pub fn word_boundary(self) -> Self {
-        let result = format!("{}\\b", self.0);
-        EasyRegex(result)
-    }
-
-    /// Adds the ```\B``` pattern, asserts position anywhere but NOT at a word boundary.
-    pub fn non_word_boundary(self) -> Self {
-        let result = format!("{}\\B", self.0);
-        EasyRegex(result)
-    }
-
     /// Adds the alternation symbol ```|``` to the expression.
     pub fn or(self) -> Self {
         let result = format!("{}|", self.0);
@@ -39,7 +22,7 @@ impl EasyRegex {
 
     /// Creates a list having ```^``` at the beginning.
     ///
-    /// ### Example
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::EasyRegex;
@@ -55,12 +38,6 @@ impl EasyRegex {
     /// Adds the ending pattern ```$```, asserts position at the end of the string.
     pub fn end_of_line(self) -> Self {
         let result = format!("{}$", self.0);
-        EasyRegex(result)
-    }
-
-    /// Adds the ending pattern ```\z```, asserts position at the end of the text.
-    pub fn only_the_end(self) -> Self {
-        let result = format!("{}\\z", self.0);
         EasyRegex(result)
     }
 

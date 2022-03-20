@@ -9,14 +9,8 @@ lazy_static! {
     pub static ref UPPER_LOWER_CASE: &'static str = "a-zA-Z";
     pub static ref LOWER_CASE: &'static str = "a-z";
     pub static ref UPPER_CASE: &'static str = "A-Z";
-    pub static ref NUMBERS: &'static str = "0-9";
+    pub static ref DIGITS: &'static str = "0-9";
     pub static ref ANY: &'static str = ".";
-    pub static ref ANY_ALPHA_NUMERIC: &'static str = "\\w";
-    pub static ref NOT_ANY_ALPHA_NUMERIC: &'static str = "\\W";
-    pub static ref DIGIT: &'static str = "\\d";
-    pub static ref NO_DIGIT: &'static str = "\\D";
-    pub static ref SPACE: &'static str = "\\s";
-    pub static ref NO_SPACE: &'static str = "\\S";
     pub static ref NULL_CHAR: &'static str = "\0";
     pub static ref NEW_LINE: &'static str = "\n";
     pub static ref FORM_FEED: &'static str = "\\f";

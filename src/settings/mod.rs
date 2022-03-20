@@ -26,7 +26,7 @@ pub enum Flags {
 impl Flags {
     /// Converts an enum flag into its equivalent meaning.
     /// 
-    /// ### Example
+    ///# Examples
     /// ```
     /// use easy_regex::settings::Flags;
     /// 

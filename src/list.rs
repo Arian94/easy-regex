@@ -11,7 +11,7 @@ impl EasyRegex {
     /// To create a list, this method can be used which takes an expression (a segment of the total pattern) followed
     /// by a set of settings (```Settings``` struct) that will be concatenated/inserted to the expression itself, outputing the previous pattern as well as this list.
     ///
-    /// ### Example:
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::base::DEFAULT};
@@ -29,7 +29,7 @@ impl EasyRegex {
 
     /// Turn the previous expression into a list. It uses ```Settings``` struct for settings parameter.
     ///
-    /// ### Example:
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::base::OPTIONAL_UNGREEDY};

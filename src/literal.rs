@@ -13,7 +13,7 @@ impl EasyRegex {
     /// by a set of settings (```Settings``` struct) that will be concatenated/inserted to the expression itself,
     /// outputing the previous pattern as well as this one.
     ///
-    /// ### Example:
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::base::DEFAULT};

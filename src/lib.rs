@@ -20,6 +20,8 @@ pub mod list;
 pub mod settings;
 pub mod collection;
 pub mod head_or_tail;
+pub mod metacharacters;
+pub mod helpers;
 
 #[macro_use]
 extern crate lazy_static;

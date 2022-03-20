@@ -21,7 +21,7 @@ use easy_regex::{EasyRegex, settings::{base:: DEFAULT, group::{DEFAULT_GROUP, SE
 let text = "Don't capture ME";  // a text to be matched by our regex.
 let result = EasyRegex::insensitive()
     .group("Don't capture", &SENSITIVE_NON_CAPTURE) // SENSITIVE_NON_CAPTURE refers to  
-                                                    // (?i) and (?: ...) options which  
+                                                    // (?-i) and (?: ...) options which  
                                                     // together makes the (?-i: ...) pattern.
     .literal(r"\s", &DEFAULT)
     .group(r"me", &DEFAULT_GROUP);

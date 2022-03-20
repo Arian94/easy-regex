@@ -14,10 +14,7 @@ fn complicated_regex() {
     let section_two = EasyRegex::new_section()
         .list(r"a-zA-Z0-9-.", &ONE_OR_MORE)
         .literal(r"\.", &DEFAULT)
-        .list(
-            &UPPER_LOWER_CASE,
-            &Settings::range(Some(2), Some(4)),
-        )
+        .list(&UPPER_LOWER_CASE, &Settings::range(Some(2), Some(4)))
         .into_group(&DEFAULT)
         .group(":[0-9]+", &OPTIONAL_GROUP)
         .literal(r"/", &OPTIONAL);
@@ -78,4 +75,21 @@ fn customized_regex_with_named_groups() {
         "^(?P<middle_name>[a-z])?",
         result.get_regex().unwrap().as_str()
     );
+}
+
+#[test]
+fn scape_chars() {
+    let result = EasyRegex::insensitive()
+        .word_boundary()
+        .literal("soap", &DEFAULT)
+        .get_regex()
+        .unwrap();
+    let text = "soap gsoap SoAp";
+    let text_captures = result.find_iter(text).collect::<Vec<_>>();
+    let found_text = format!(
+        "{} {}",
+        text_captures[0].as_str(),
+        text_captures[1].as_str()
+    );
+    assert_eq!("soap SoAp", found_text);
 }

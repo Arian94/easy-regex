@@ -14,7 +14,7 @@ impl EasyRegex {
     /// To create a group, this method can be used which takes an expression (a segment of the total pattern) followed
     /// by a set of settings that will be concatenated/inserted to the expression itself, outputing the previous pattern as well as this group.
     ///
-    /// ### Example:
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::group::OPTIONAL_GROUP};
@@ -55,7 +55,7 @@ impl EasyRegex {
 
     /// Same as the ```group``` method with the option to add a custom name to the group.
     ///
-    /// ### Example:
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::group::OPTIONAL_GROUP};
@@ -70,7 +70,7 @@ impl EasyRegex {
 
     /// Turn the previous expression into a **capturing** group. It uses ```Settings``` struct for settings.
     ///
-    /// ### Example:
+    /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::base::OPTIONAL};
@@ -97,97 +97,97 @@ impl EasyRegex {
         EasyRegex(result)
     }
     ////////////////////////////////////////////////////////////////
-    /// A variation of ```into_group``` having Insensitive flag **(?i)**.
+    /// A variation of ```into_group``` having *Insensitive* flag **(?i)**.
     pub fn into_insensitive_group(self) -> Self {
         let result = format!("((?i){})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_group``` having Multiline flag **(?m)**.
+    /// A variation of ```into_group``` having *Multiline* flag **(?m)**.
     pub fn into_multline_group(self) -> Self {
         let result = format!("((?m){})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_group``` having Dot All flag **(?s)**.
+    /// A variation of ```into_group``` having *Dot All* flag **(?s)**.
     pub fn into_dot_match_newline_group(self) -> Self {
         let result = format!("((?s){})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_group``` ignoring whitespaces **(?x)**.
+    /// A variation of ```into_group``` ignoring *whitespaces* **(?x)**.
     pub fn into_ignore_whitespace_group(self) -> Self {
         let result = format!("((?x){})", self.0);
         EasyRegex(result)
     }
     ////////////////////////////////////////////////////////////////
-    /// A variation of ```into_non_capturing``` having Insensitive flag **(?i)**.
+    /// A variation of ```into_non_capturing``` having *Insensitive* flag **(?i)**.
     pub fn into_insensitive_non_capturing(self) -> Self {
         let result = format!("(?i:{})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_non_capturing``` having Multiline flag **(?m)**.
+    /// A variation of ```into_non_capturing``` having *Multiline* flag **(?m)**.
     pub fn into_multiline_non_capturing(self) -> Self {
         let result = format!("(?m:{})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_non_capturing``` having Dot All flag **(?s)**.
+    /// A variation of ```into_non_capturing``` having *Dot All* flag **(?s)**.
     pub fn into_dot_match_newline_non_capturing(self) -> Self {
         let result = format!("(?s:{})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_non_capturing``` ignoring whitespaces **(?x)**.
+    /// A variation of ```into_non_capturing``` ignoring *whitespaces* **(?x)**.
     pub fn into_ignore_whitespace_non_capturing(self) -> Self {
         let result = format!("(?x:{})", self.0);
         EasyRegex(result)
     }
     ////////////////////////////////////////////////////////////////
-    /// A variation of ```into_group``` having Insensitive flag cleared **(?-i)**.
+    /// A variation of ```into_group``` having *Insensitive* flag cleared **(?-i)**.
     pub fn into_sensitive_group(self) -> Self {
-        let result = format!("(?-i){}", self.0);
+        let result = format!("((?-i){})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_group``` having Multiline flag cleared **(?-m)**.
+    /// A variation of ```into_group``` having *Multiline* flag cleared **(?-m)**.
     pub fn into_single_line_group(self) -> Self {
-        let result = format!("(?-m){}", self.0);
+        let result = format!("((?-m){})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_group``` having Dot All flag cleared **(?-s)**.
+    /// A variation of ```into_group``` having *Dot All* flag cleared **(?-s)**.
     pub fn into_dot_dismatch_newline_group(self) -> Self {
-        let result = format!("(?-s){}", self.0);
+        let result = format!("((?-s){})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_group``` taking whitespaces into account **(?-x)**.
+    /// A variation of ```into_group``` taking *whitespaces* into account **(?-x)**.
     pub fn into_include_whitespace_group(self) -> Self {
-        let result = format!("(?-x){}", self.0);
+        let result = format!("((?-x){})", self.0);
         EasyRegex(result)
     }
     ////////////////////////////////////////////////////////////////
-    /// A variation of ```into_non_capturing``` having Insensitive flag cleared **(?-i)**.
+    /// A variation of ```into_non_capturing``` having *Insensitive* flag cleared **(?-i)**.
     pub fn into_sensitive_non_capturing(self) -> Self {
         let result = format!("(?-i:{})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_non_capturing``` having Multiline flag cleared **(?-m)**.
+    /// A variation of ```into_non_capturing``` having *Multiline* flag cleared **(?-m)**.
     pub fn into_single_line_non_capturing(self) -> Self {
         let result = format!("(?-m:{})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_non_capturing``` having Dot All flag cleared **(?-s)**.
+    /// A variation of ```into_non_capturing``` having *Dot All* flag cleared **(?-s)**.
     pub fn into_dot_dismatch_newline_non_capturing(self) -> Self {
         let result = format!("(?-s:{})", self.0);
         EasyRegex(result)
     }
 
-    /// A variation of ```into_non_capturing``` taking whitespaces into account **(?-x)**.
+    /// A variation of ```into_non_capturing``` taking *whitespaces* into account **(?-x)**.
     pub fn into_include_whitespace_non_capturing_group(self) -> Self {
         let result = format!("(?-x:{})", self.0);
         EasyRegex(result)
