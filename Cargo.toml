@@ -1,9 +1,9 @@
 [package]
 name = "easy-regex"
-version = "0.7.4"
+version = "0.10.6"
 edition = "2021"
 authors = ["arian pourarian <arianpourarian@gmail.com>"]
-description = "Make long regular expressions easier to write and read (multilanguage regex included)."
+description = "Make long regular expressions easier to write and read"
 documentation="https://docs.rs/easy-regex"
 repository = "https://github.com/Arian94/easy-regex.git"
 categories = ["text-processing", "development-tools"]
