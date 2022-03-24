@@ -1,13 +1,12 @@
 <img alt="github" src="https://img.shields.io/github/license/arian94/easy-regex?style=plastic" height="20px">
 <img alt="build" src="https://github.com/arian94/easy-regex/actions/workflows/rust.yml/badge.svg?logo=rust">
 <img alt="docs" src="https://img.shields.io/docsrs/easy-regex?style=plastic" height="20px">
-<img alt="docs" src="https://img.shields.io/github/commit-activity/m/arian94/easy-regex?style=plastic" height="20px">
 
 ## Usage
-To force writing long regular expressions as readable as possible by making it verbose and clear to write/read, this lightweight crate has been created.
+This lightweight crate is created to make long regular expressions as readable as possible by making it verbose and clear to write/read, 
 
 ## Introduction
-It consists of few main methods and plenty of handy functions. You can write a long regex using them along with already-adjusted settings and prepared patterns for **English, French, German, Persian, Chinese and Arabic** languages. 
+It consists of three main methods and plenty of handy functions. Along with already-adjusted combinations of flags, special characters and prepared patterns such as Website URL, Time Formats, French, Persian, Chinese Alphabets etc. you could write *long* regular expressions which are easy to follow and read.
 
 ### Example 1 - Simple Regex
 To create a regex like
