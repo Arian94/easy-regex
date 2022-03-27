@@ -1,6 +1,6 @@
 [package]
 name = "easy-regex"
-version = "0.10.6"
+version = "0.11.7"
 edition = "2021"
 authors = ["arian pourarian <arianpourarian@gmail.com>"]
 description = "Make long regular expressions like pseudocodes"
