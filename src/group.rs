@@ -1,7 +1,8 @@
-//! Create a group pattern in many different ways as desired.
+//! Creates a group pattern in many different ways as desired.
 //! 
 //! This module consists of methods needed to create a group in many different ways, having different options/settings.
-//! The main one is the [`group`](../struct.EasyRegex.html#method.group) method which takes an expression as argument and creates a group for it.
+//! The main one is the [`group`](../struct.EasyRegex.html#method.group) method which takes an expression as argument
+//! and a set of meta as ```GroupSettings``` creates a group for it.
 //! Other methods starting with the ```into``` word followed by an underline makes all previously chained expressions into a group.
 //! They mostly take no arguments for settings and are useful to be added to the latter part of a method chain.
 
@@ -11,8 +12,11 @@ use crate::{
 };
 
 impl EasyRegex {
-    /// To create a group, this method can be used which takes an expression (a segment of the total pattern) followed
-    /// by a set of settings that will be concatenated/inserted to the expression itself, outputing the previous pattern as well as this group.
+    /// Creates a group of expressions.
+    ///  
+    /// This method takes an expression (a segment of entire pattern) followed
+    /// by a set of settings (```GroupSettings``` struct) that will be concatenated/inserted to the expression itself,
+    /// outputing the previous pattern followed by this group.
     ///
     /// # Examples
     ///
@@ -68,7 +72,7 @@ impl EasyRegex {
         self.group(&final_result, &group_settings)
     }
 
-    /// Turn the previous expression into a **capturing** group. It uses ```Settings``` struct for settings.
+    /// Turns the previous expressions into a **capturing** group. It uses ```Settings``` struct for the settings parameter.
     ///
     /// # Examples
     ///
@@ -84,14 +88,14 @@ impl EasyRegex {
         final_result
     }
 
-    /// A variation of ```into_group``` having name option **(?P\<name\>RegExp)**.
+    /// A variation of ```into_group``` having *name* option **(?P\<name\>RegExp)**.
     pub fn into_named_group(self, name: &str, settings: &Settings) -> Self {
         let raw_result = format!("(?P<{}>{})", name, self.0);
         let final_result = EasyRegex(String::new()).literal(&raw_result, &settings);
         final_result
     }
 
-    /// A variation of ```into_group``` having non-capturing option **(?:RegExp)**.
+    /// A variation of ```into_group``` having *non-capturing* option **(?:RegExp)**.
     pub fn into_non_capturing(self) -> Self {
         let result = format!("(?:{})", self.0);
         EasyRegex(result)
@@ -188,7 +192,7 @@ impl EasyRegex {
     }
 
     /// A variation of ```into_non_capturing``` taking *whitespaces* into account **(?-x)**.
-    pub fn into_include_whitespace_non_capturing_group(self) -> Self {
+    pub fn into_include_whitespace_non_capturing(self) -> Self {
         let result = format!("(?-x:{})", self.0);
         EasyRegex(result)
     }

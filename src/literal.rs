@@ -2,24 +2,25 @@
 //! 
 //! The most basic way of writing regex using this crate is by calling the [`literal`](../struct.EasyRegex.html#method.literal) method.
 //! As the name implies, it's for creating regular expressions that should match characters literally.
-//! It cannot be used as the very first method but it is the backbone of some other important methods (e.g. [`group`](../struct.EasyRegex.html#method.group) method).
-//! It takes an expression and a set of settings and outputs an ```EasyRegex``` instance.
+//! It cannot be used as the very first method but it is the backbone of other important methods (e.g. [`group`](../struct.EasyRegex.html#method.group) method).
+//! It takes an expression and a set of settings (special characters, flags etc.) and outputs an ```EasyRegex``` instance.
 
 use crate::{settings::*, EasyRegex};
 
 impl EasyRegex {
-    /// To create a literal regular expression, this is the method can be used which
-    /// takes an expression (a segment of the total pattern) followed
+    /// Creates a literal regular expression.
+    /// 
+    /// This method takes an expression (a segment of entire pattern) followed
     /// by a set of settings (```Settings``` struct) that will be concatenated/inserted to the expression itself,
-    /// outputing the previous pattern as well as this one.
+    /// outputing the previous pattern followed by this prepared regular expression.
     ///
     /// # Examples
     ///
     /// ```
     /// use easy_regex::{EasyRegex, settings::base::DEFAULT};
     /// 
-    /// let result = EasyRegex::new_section().literal("\\w", &DEFAULT);
-    /// assert_eq!("\\w", result.get_regex().unwrap().as_str());
+    /// let result = EasyRegex::new_section().literal("some expression", &DEFAULT);
+    /// assert_eq!("some expression", result.get_regex().unwrap().as_str());
     /// ```
     pub fn literal(self, expression: &str, settings: &Settings) -> EasyRegex {
         let mut final_result = expression.to_string();

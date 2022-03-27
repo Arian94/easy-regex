@@ -1,6 +1,4 @@
-//! Unicode characters of Persian letters are not defined in the same order as their corresponding letters.
-//! This could result in confusion when creating customized persian word patterns.
-//! To solve that, a helper method is defined here.
+//! Helper methods for Persian letters.
 
 #[allow(dead_code)]
 
@@ -274,8 +272,12 @@ lazy_static! {
     ];
 }
 
-/// To create a range of persian letters.
+/// Creates a list/range of persian letters.
 ///
+/// Unicode characters of Persian letters are not defined in the same order as their corresponding letters.
+/// This could result in confusion when creating customized persian word patterns.
+/// To solve that, a helper method is defined here.
+/// 
 /// # Examples
 /// ```
 /// use easy_regex::helpers::persian_pattern::create_persian_pattern;

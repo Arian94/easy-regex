@@ -3,7 +3,7 @@
 use crate::{settings::Settings, EasyRegex};
 
 impl EasyRegex {
-    /// Creates an EasyRegex instance starting with the ```\A``` pattern.
+    /// Creates an ```EasyRegex``` instance starting with the ```\A``` character, asserts position at start of the string.
     pub fn only_the_beginning() -> Self {
         EasyRegex("\\A".to_string())
     }
@@ -15,38 +15,38 @@ impl EasyRegex {
     }
 
     /// Adds the ```\w``` metacharacter, matches any word character [a-zA-Z0-9_].
-    pub fn word(self, settings: Settings) -> Self {
-        let result = self.literal("\\w", &settings);
+    pub fn word(self, settings: &Settings) -> Self {
+        let result = self.literal("\\w", settings);
         result
     }
 
-    /// Adds the ```\w``` metacharacter, matches any non-word character [^a-zA-Z0-9_].
-    pub fn non_word(self, settings: Settings) -> Self {
-        let result = self.literal("\\W", &settings);
+    /// Adds the ```\w``` metacharacter, matches any non-word character \[^a-zA-Z0-9_\].
+    pub fn non_word(self, settings: &Settings) -> Self {
+        let result = self.literal("\\W", settings);
         result
     }
 
     /// Adds the ```\d``` metacharacter, matches digit character [0-9].
-    pub fn digit(self, settings: Settings) -> Self {
-        let result = self.literal("\\d", &settings);
+    pub fn digit(self, settings: &Settings) -> Self {
+        let result = self.literal("\\d", settings);
         result
     }
 
-    /// Adds the ```\D``` metacharacter, matches any non-digit character [^0-9].
-    pub fn non_digit(self, settings: Settings) -> Self {
-        let result = self.literal("\\D", &settings);
+    /// Adds the ```\D``` metacharacter, matches any non-digit character \[^0-9\].
+    pub fn non_digit(self, settings: &Settings) -> Self {
+        let result = self.literal("\\D", settings);
         result
     }
 
-    /// Adds the ```\s``` metacharacter, matches whitespace character [\r\n\t\f\v ].
-    pub fn whitespace(self, settings: Settings) -> Self {
-        let result = self.literal("\\s", &settings);
+    /// Adds the ```\s``` metacharacter, matches any whitespace character [\r\n\t\f\v ].
+    pub fn whitespace(self, settings: &Settings) -> Self {
+        let result = self.literal("\\s", settings);
         result
     }
 
-    /// Adds the ```\S``` metacharacter, matches any non-whitespace character [^\r\n\t\f\v ].
-    pub fn non_whitespace(self, settings: Settings) -> Self {
-        let result = self.literal("\\S", &settings);
+    /// Adds the ```\S``` metacharacter, matches any non-whitespace character \[^\r\n\t\f\v \].
+    pub fn non_whitespace(self, settings: &Settings) -> Self {
+        let result = self.literal("\\S", settings);
         result
     }
 

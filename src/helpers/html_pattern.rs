@@ -1,17 +1,18 @@
-//! To create regular expressions for HTML elements.
+//! Helper methods related to creating regex for HTML elements.
 
 use std::borrow::BorrowMut;
 
+/// A Recursive structure for defining HTML pattern.
 pub struct HtmlPattern<'a> {
     pub tag_name: &'a str,
     pub essential_attribute: Option<&'a str>,
     pub child_html: Box<Option<HtmlPattern<'a>>>,
 }
 
-/// Creates regular expressions for HTML elements.
+/// Creates regular expressions for HTML elements recursively.
 /// 
-/// This methods takes an HTML element that could have nested elements and outputs a regular expression
-/// which captures the innerHTML. If the element has nested elements, it will caputure the deepest child element innerHTML.
+/// This methods takes an HTML element which could have nested elements and outputs a regular expression
+/// that captures the innerHTML. If the element has nested elements, it will caputure the deepest child element's innerHTML.
 ///
 /// # Examples
 ///

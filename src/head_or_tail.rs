@@ -1,15 +1,14 @@
 //! Includes methods for starting/ending chain of expressions.
 //! 
-//! This module includes methods which typically are useful to start or end a regular expression.
+//! This module includes methods typically useful to start or end a regular expression.
 //! Methods as [`start_of_line`](../struct.EasyRegex.html#method.start_of_line), [`only_the_beginning`](../struct.EasyRegex.html#method.only_the_beginning)
 //! and flag-related methods can only be used as the starting method and
-//! the others could be used in the middle or at the end of a regex, although methods like [`end_of_line`](../struct.EasyRegex.html#method.end_of_line) are meaningful 
-//! only when called as the final function.
+//! the others could be used in the middle or at the end of a method chain as well.
 
 use crate::EasyRegex;
 
 impl EasyRegex {
-    /// Creates an EasyRegex instance starting with the ```^``` pattern, asserts position at start of the string.
+    /// Creates an ```EasyRegex``` instance starting with the ```^``` character, asserts position at start of the string.
     pub fn start_of_line() -> Self {
         EasyRegex("^".to_string())
     }
@@ -35,28 +34,34 @@ impl EasyRegex {
         EasyRegex(result)
     }
 
+    /// Adds one space character i.e. " " to the previous expression.
+    pub fn literal_space(self) -> Self {
+        let result = format!("{} ", self.0);
+        EasyRegex(result)
+    }
+
     /// Adds the ending pattern ```$```, asserts position at the end of the string.
     pub fn end_of_line(self) -> Self {
         let result = format!("{}$", self.0);
         EasyRegex(result)
     }
 
-    /// Creates an EasyRegex instance starting with the ```(?i)``` flag.
+    /// Creates an ```EasyRegex``` instance starting with the ```(?i)``` flag.
     pub fn insensitive() -> Self {
         EasyRegex("(?i)".to_string())
     }
 
-    /// Creates an EasyRegex instance starting with the ```(?m)``` flag.
+    /// Creates an ```EasyRegex``` instance starting with the ```(?m)``` flag.
     pub fn multiline() -> Self {
         EasyRegex("(?m)".to_string())
     }
 
-    /// Creates an EasyRegex instance starting with the ```(?s)``` flag.
+    /// Creates an ```EasyRegex``` instance starting with the ```(?s)``` flag.
     pub fn dot_match_newline() -> Self {
         EasyRegex("(?s)".to_string())
     }
 
-    /// Creates an EasyRegex instance starting with the ```(?x)``` flag.
+    /// Creates an ```EasyRegex``` instance starting with the ```(?x)``` flag.
     pub fn ignore_whitespace() -> Self {
         EasyRegex("(?x)".to_string())
     }

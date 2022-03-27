@@ -1,17 +1,18 @@
-//! Settings to be used as necessary meta information for patterns.
+//! Flags, Special Characters etc. classified as Settings to be used as necessary meta information for patterns.
 //! 
-//! Here are the meta data such as flags, boundaries etc. needed to be added to regular expressions.
+//! Here are the meta data such as flags, boundaries needed to be added to regular expressions.
 //! For most methods except [`group`](../struct.EasyRegex.html#method.group) and [`named_group`](../struct.EasyRegex.html#method.named_group),
-//! the ```Settings``` struct would be used and for the two mentioned, the ```GroupSettings``` struct which 
+//! the ```Settings``` struct would be used and for these two, the ```GroupSettings``` struct which 
 //! has one extra meta that is ```is_non_capture```.
-//! There is a default implemention for both structs to reduce typing repetitive meta over and over and shorten code length.
-//! Two more methods are provided for setting an exact or a range of repetitions in case of only declaring range or exact options.
-//! Those are ```exactly``` and ```range``` for ```base``` settings and ```grp_exactly``` and ```grp_range``` for ```group``` settings.
+//! There is a default implemention for both structs for ease of use and to reduce typing repetitive meta over and over as well as shortening code length.
+//! Two methods are provided for setting an exact or a range of repetitions for an expression in case the only meta is either of them.
+//! Those are ```exactly``` and ```range``` for non-group expressions called ```base``` settings and ```grp_exactly``` and ```grp_range``` for ```group``` settings.
 
 pub mod base;
 pub mod group;
 
 #[derive(Clone, Copy)]
+/// Regular Expression Flags
 pub enum Flags {
     Insensitive,
     Multiline,
@@ -46,6 +47,7 @@ impl Flags {
     }
 }
 
+/// A set of meta indicating what special characters (quantifiers), boundaries and flags should be added to an expression.
 pub struct Settings {
     pub is_optional: bool,
     pub is_optional_ungreedy: bool,
@@ -94,6 +96,7 @@ impl Settings {
     }
 }
 
+/// A set of meta extending ```Settings``` struct by adding a property to determine if a group is capturing or not.
 pub struct GroupSettings {
     pub other: Settings,
     pub is_non_capture: bool,
